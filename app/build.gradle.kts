@@ -46,4 +46,5 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     implementation("com.google.android.material:material:1.2.0-alpha05")
+    implementation("androidx.recyclerview:recyclerview:1.4.0")
 }

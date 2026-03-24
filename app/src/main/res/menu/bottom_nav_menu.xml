@@ -15,4 +15,8 @@
         android:id="@+id/misetting"
         android:title="setting"
         android:icon="@drawable/ic_setting_foreground"/>
+    <item
+        android:id="@+id/miorder_status"
+        android:title="order status"
+        android:icon="@drawable/ic_order_status_foreground"/>
 </menu>
