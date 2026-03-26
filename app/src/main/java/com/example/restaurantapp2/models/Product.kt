@@ -10,8 +10,10 @@ data class Product(
     val productPriceReduction : Double
 ) {
     val isDiscounted : Boolean
-        get() = productPriceReduction >0.0
+//        get() = productPriceReduction >0.0
+        get() = false
     val finalPrice : Double
-        get() = productPrice * (1.0 - productPriceReduction)
+//        get() = productPrice * (1.0 - productPriceReduction)
+        get() = productPrice
 
 }
