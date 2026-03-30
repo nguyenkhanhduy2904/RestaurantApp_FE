@@ -34,8 +34,6 @@ class ProductAdapter(
             Glide.with(binding.root).load(product.productThumbnailUrl).placeholder(R.drawable.default_food_img).into(binding.ivFoodImage)
         }
 
-
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {

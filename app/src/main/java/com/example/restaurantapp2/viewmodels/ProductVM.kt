@@ -16,7 +16,6 @@ class ProductVM :ViewModel() {
 
     init{
         loadProducts()
-
     }
 
     private fun loadProducts() {
