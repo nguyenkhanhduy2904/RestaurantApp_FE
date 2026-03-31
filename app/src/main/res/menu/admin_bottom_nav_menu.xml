@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/mi_product_list"
+        android:title="product list"
+        android:icon="@drawable/ic_list_foreground"/>
+
+    <item
+        android:id="@+id/mi_user_list"
+        android:title="user list"
+        android:icon="@drawable/ic_users_foreground"/>
+
+    <item
+        android:id="@+id/misetting"
+        android:title="setting"
+        android:icon="@drawable/ic_setting_foreground"/>
+    <item
+        android:id="@+id/mi_order_list"
+        android:title="order list"
+        android:icon="@drawable/ic_orders_foreground"/>
+</menu>

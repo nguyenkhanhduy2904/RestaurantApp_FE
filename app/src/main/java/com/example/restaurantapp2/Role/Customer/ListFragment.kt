@@ -1,4 +1,4 @@
-package com.example.restaurantapp2
+package com.example.restaurantapp2.Role.Customer
 
 import android.os.Bundle
 import android.util.Log
@@ -12,6 +12,7 @@ import com.example.restaurantapp2.adapter.ProductAdapter
 import com.example.restaurantapp2.viewmodels.ProductVM
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.ConcatAdapter
+import com.example.restaurantapp2.R
 import com.example.restaurantapp2.adapter.HeaderAdapter
 
 
