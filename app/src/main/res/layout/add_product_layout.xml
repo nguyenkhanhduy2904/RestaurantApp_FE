@@ -78,6 +78,7 @@
                 android:text="Ten mon: "
                 android:textSize="20dp"/>
             <EditText
+                android:id="@+id/txtProductName"
                 android:layout_weight="1.5"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -104,7 +105,9 @@
                 android:layout_weight="1.2"
                 android:orientation="horizontal">
                 <EditText
+                    android:id="@+id/txtProductPrice"
                     android:layout_weight="3"
+                    android:inputType="numberSigned"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:background="@drawable/bg_edit_text" />
@@ -132,6 +135,7 @@
                 android:text="Mo ta: "
                 android:textSize="20dp"/>
             <EditText
+                android:id="@+id/txtProductDescription"
                 android:layout_weight="1.5"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -157,6 +161,7 @@
                 android:layout_weight="1.2"
                 android:orientation="horizontal">
                 <Spinner
+                    android:id="@+id/spnCategory"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="3"
@@ -210,6 +215,7 @@
                 android:layout_weight="2"
                 android:layout_height="match_parent"/>
             <Button
+                android:id="@+id/btnSave"
                 android:text="Luu"
                 android:backgroundTint="@color/green"
                 android:layout_width="wrap_content"

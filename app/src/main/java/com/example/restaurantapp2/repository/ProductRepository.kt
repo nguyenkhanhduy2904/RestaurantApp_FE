@@ -1,6 +1,7 @@
 package com.example.restaurantapp2.repository
 
 import com.example.restaurantapp2.models.Product
+import com.example.restaurantapp2.models.ProductRequest
 import com.example.restaurantapp2.network.RetrofitClient
 
 class ProductRepository {
@@ -9,6 +10,10 @@ class ProductRepository {
 
     suspend fun getProducts(): List<Product> {
         return api.getProducts()
+    }
+
+    suspend fun createProduct(product: ProductRequest): ProductRequest {
+        return api.createProduct(product)
     }
 
 //    fun getProducts(): List<Product> {
