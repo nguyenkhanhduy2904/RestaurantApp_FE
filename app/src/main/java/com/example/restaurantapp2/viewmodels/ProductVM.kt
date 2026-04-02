@@ -15,16 +15,33 @@ class ProductVM :ViewModel() {
     private val _products = MutableLiveData<List<Product>>()
     val products: LiveData<List<Product>> = _products          // public
 
+    private val _selectedProduct = MutableLiveData<Product>()
+    val selectedProduct: LiveData<Product> = _selectedProduct
+
+
+
     private val _createStatus = MutableLiveData<Boolean>()
     val createStatus: LiveData<Boolean> = _createStatus
     init{
         loadProducts()
     }
 
-    private fun loadProducts() {
+    fun loadProducts() {
         viewModelScope.launch {
             try {
                 _products.value = repo.getProducts()
+            } catch (e: Exception) {
+                Log.e("ProductVM", "error: ${e.message}")
+            }
+        }
+    }
+    fun getProductById(productId: Int) {
+        viewModelScope.launch {
+            try {
+                val product = repo.getProductById(productId)
+                _selectedProduct.value = product
+
+                // do something with the product, e.g. post to another LiveData for details screen
             } catch (e: Exception) {
                 Log.e("ProductVM", "error: ${e.message}")
             }
@@ -35,7 +52,7 @@ class ProductVM :ViewModel() {
         viewModelScope.launch {
             try {
                 repo.createProduct(product)
-                _createStatus.postValue(true) // ✅ IMPORTANT
+                _createStatus.postValue(true) //  IMPORTANT
             } catch (e: Exception) {
                 _createStatus.postValue(false)
             }

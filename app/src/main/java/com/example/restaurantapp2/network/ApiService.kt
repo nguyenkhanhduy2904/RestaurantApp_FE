@@ -5,6 +5,7 @@ import com.example.restaurantapp2.models.ProductRequest
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Path
 
 interface ApiService {
 
@@ -14,4 +15,9 @@ interface ApiService {
 
     @POST("product")
     suspend fun createProduct(@Body product: ProductRequest): ProductRequest
+
+    @GET("product/{id}")
+    suspend fun getProductsById(
+        @Path("id") productId: Int
+    ): Product
 }

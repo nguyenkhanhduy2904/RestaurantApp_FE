@@ -16,6 +16,7 @@ import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import com.bumptech.glide.Glide
 import com.example.restaurantapp2.models.Product
 import com.example.restaurantapp2.models.ProductRequest
 import com.example.restaurantapp2.network.CloudinaryService
@@ -26,6 +27,11 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class CreateProductFragment : Fragment(R.layout.add_product_layout) {
+
+    val productId = arguments?.getInt("productId") ?: -1
+
+    var isEditMode : Boolean = false
+
 
     private lateinit var btnCancel : Button
     private lateinit var btnBack: ImageButton
@@ -65,6 +71,26 @@ class CreateProductFragment : Fragment(R.layout.add_product_layout) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val productId = arguments?.getInt("productId") ?: -1
+
+        if(productId ==-1){
+            //create mode, do nothing
+            isEditMode = false
+        }
+        else{
+            isEditMode = true
+            //edit mode, load product details and populate fields
+            loadProductDetails(productId)
+
+//             vm.selectedProduct.observe(viewLifecycleOwner){ product ->
+//                 requireView().findViewById<EditText>(R.id.txtProductName).setText(product.productName)
+//                 requireView().findViewById<EditText>(R.id.txtProductPrice).setText(product.productPrice.toString())
+//                 requireView().findViewById<EditText>(R.id.txtProductDescription).setText(product.productDescription)
+//                 // load image using Glide or similar library
+//             }
+        }
+
+
         btnCancel = view.findViewById<Button>(R.id.btnCancel)
         btnBack = view.findViewById<ImageButton>(R.id.ibtnBack)
         btnSave = view.findViewById<Button>(R.id.btnSave)
@@ -100,6 +126,23 @@ class CreateProductFragment : Fragment(R.layout.add_product_layout) {
             }
         }
     }
+
+    fun loadProductDetails(productId: Int) {
+
+        vm.getProductById(productId)
+
+        Log.d("CreateProductFragment", "Loading product details for ID: $productId")
+        vm.selectedProduct.observe(viewLifecycleOwner){ product ->
+            requireView().findViewById<EditText>(R.id.txtProductName).setText(product.productName)
+            requireView().findViewById<EditText>(R.id.txtProductPrice).setText(product.productPrice.toString())
+            requireView().findViewById<EditText>(R.id.txtProductDescription).setText(product.productDescription)
+
+            Glide.with(requireContext()).load(product.productThumbnailUrl).placeholder(R.drawable.default_food_img).into(requireView().findViewById<ImageButton>(R.id.btnPickImage))
+             }
+
+
+    }
+
 
     fun handleBackFunction() {
         parentFragmentManager.popBackStack()

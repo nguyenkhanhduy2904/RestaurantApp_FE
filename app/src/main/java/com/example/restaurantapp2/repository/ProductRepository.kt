@@ -16,6 +16,11 @@ class ProductRepository {
         return api.createProduct(product)
     }
 
+    suspend fun getProductById(productId: Int): Product {
+        return api.getProductsById(productId)
+
+    }
+
 //    fun getProducts(): List<Product> {
 //        return listOf(
 //            Product(1, "Pizza", 20000.0, "A traditional Italian Pizza", 1, "url", 0.0),
