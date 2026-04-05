@@ -4,6 +4,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.restaurantapp2.R
 import com.example.restaurantapp2.databinding.ItemCategoryBinding
 import com.example.restaurantapp2.models.Category
 
@@ -12,6 +13,7 @@ class CategoryAdapterAdmin(
     private val onCategoryClick: (Category) -> Unit
 ) : RecyclerView.Adapter<CategoryAdapterAdmin.CategoryViewHolder>() {
 
+    private var selectedCategoryId : Int? = null
 
 
     inner class CategoryViewHolder(private val binding: ItemCategoryBinding) : RecyclerView.ViewHolder(binding.root) {
@@ -20,6 +22,16 @@ class CategoryAdapterAdmin(
             binding.txtCategoryName.text = category.categoryName
             binding.root.setOnClickListener {
                 onCategoryClick(category)
+            }
+
+
+            val isSelected = category.categoryId == selectedCategoryId
+
+            if(isSelected){
+                binding.root.setBackgroundResource(R.drawable.bg_category_selected)
+            } else {
+                binding.root.setBackgroundResource(android.R.color.transparent)
+
             }
         }
 
@@ -44,6 +56,14 @@ class CategoryAdapterAdmin(
         (categories as MutableList).clear()
         (categories as MutableList).addAll(newList)
         notifyDataSetChanged()
+
+    }
+
+    fun updateSelectedCategory(categoryId: Int?) {
+        Log.d("CategoryAdapter", "Updating selected category to $categoryId")
+        selectedCategoryId = categoryId
+        notifyDataSetChanged()
+
 
     }
 

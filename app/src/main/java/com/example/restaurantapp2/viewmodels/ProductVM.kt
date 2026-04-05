@@ -14,7 +14,8 @@ class ProductVM :ViewModel() {
 
     var allProducts: List<Product> = emptyList()
 
-    private var selectedCategoryId: Int? = null
+    private val _selectedCategoryId = MutableLiveData<Int?>()
+    val selectedCategoryId : LiveData<Int?> = _selectedCategoryId
 
     private val repo = ProductRepository()
     private val _products = MutableLiveData<List<Product>>()
@@ -96,11 +97,15 @@ class ProductVM :ViewModel() {
 
     fun filterProductsByCategory(categoryId: Int) {
 
-        selectedCategoryId =
-            if (selectedCategoryId == categoryId) null  // second click => deselect
-            else categoryId                            // first click => select
+        val current = _selectedCategoryId.value
 
-        val result = selectedCategoryId?.let { id ->
+        val newSelected =
+            if (current == categoryId) null
+            else categoryId
+
+        _selectedCategoryId.value = newSelected   // update LiveData
+
+        val result = newSelected?.let { id ->
             allProducts.filter { it.categoryId == id }
         } ?: allProducts
 

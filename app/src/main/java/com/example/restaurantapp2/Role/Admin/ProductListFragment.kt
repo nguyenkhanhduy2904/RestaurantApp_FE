@@ -60,12 +60,20 @@ class ProductListFragment: Fragment(R.layout.fragment_product_list) {
 
 
 
+
+
+
         view.findViewById<RecyclerView>(R.id.rvProductList).apply {
             layoutManager = LinearLayoutManager(requireContext())
             this.adapter = ConcatAdapter(header,adapter)
         }
 
         viewModel.loadProducts()
+
+        viewModel.selectedCategoryId.observe(viewLifecycleOwner){
+            header.updateSelectedCategory(it)
+        }
+
 
         categoryVM.categories.observe(viewLifecycleOwner) {
             Log.d("CATEGORY_DEBUG", "Observed size: ${it.size}")

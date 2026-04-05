@@ -14,10 +14,11 @@ class HeaderAdapterAdmin(
     private val onCategoryClick: (Category) -> Unit
 ) : RecyclerView.Adapter<HeaderAdapterAdmin.HeaderViewHolder>() {
 
+    private val categoryAdapter = CategoryAdapterAdmin(mutableListOf(), onCategoryClick)
     inner class HeaderViewHolder(private val binding: ItemHeaderBinding)
         : RecyclerView.ViewHolder(binding.root) {
 
-        private val categoryAdapter = CategoryAdapterAdmin(mutableListOf(), onCategoryClick)
+
 
         init {
             binding.rvCategoryList.apply {
@@ -52,5 +53,10 @@ class HeaderAdapterAdmin(
         categories.clear()
         categories.addAll(newList)
         notifyItemChanged(0) // better than notifyDataSetChanged()
+    }
+
+
+    fun updateSelectedCategory(categoryId: Int?) {
+        categoryAdapter.updateSelectedCategory(categoryId)
     }
 }
