@@ -5,23 +5,26 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.restaurantapp2.R
 import com.example.restaurantapp2.adapter.HeaderAdapter
+import com.example.restaurantapp2.adapter.HeaderAdapterAdmin
 import com.example.restaurantapp2.adapter.ProductAdapterAdmin
+import com.example.restaurantapp2.viewmodels.CategoryVM
 import com.example.restaurantapp2.viewmodels.ProductVM
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class ProductListFragment: Fragment(R.layout.fragment_product_list) {
 
-    private val viewModel : ProductVM by viewModels()
+    private val viewModel: ProductVM by activityViewModels()
+    private val categoryVM: CategoryVM by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         val adapter = ProductAdapterAdmin(mutableListOf(),
             onEditClick = { product ->
                 val bundle = Bundle().apply {
@@ -29,6 +32,7 @@ class ProductListFragment: Fragment(R.layout.fragment_product_list) {
                 }
                 // handle edit click, e.g. navigate to edit screen with product details
                 Toast.makeText(requireContext(), "Edit clicked for ${product.productName}", Toast.LENGTH_SHORT).show()
+                Log.d("Product Id:", "${product.productId}")
                 parentFragmentManager.beginTransaction().apply {
                     replace(R.id.flFragment, CreateProductFragment::class.java, bundle)
                     addToBackStack(null)
@@ -42,15 +46,42 @@ class ProductListFragment: Fragment(R.layout.fragment_product_list) {
                 Log.d("ProductListFragment", "Delete clicked for ${product.productName}")
             }
         )
-        val header = HeaderAdapter()
+        val header = HeaderAdapterAdmin(mutableListOf(),
+            onCategoryClick = { category ->
+                // handle category click, e.g. filter products by category
+                viewModel.filterProductsByCategory(category.categoryId)
+                Toast.makeText(requireContext(), "Category clicked: ${category.categoryName}", Toast.LENGTH_SHORT).show()
+                Log.d("ProductListFragment", "Category clicked: ${category.categoryName}" + "All product: "+  viewModel.allProducts.size + "Filtered product: " + viewModel.products.value?.size)
+
+            }
+        )
+
+
+
+
+
         view.findViewById<RecyclerView>(R.id.rvProductList).apply {
             layoutManager = LinearLayoutManager(requireContext())
             this.adapter = ConcatAdapter(header,adapter)
         }
 
-        viewModel.products.observe(viewLifecycleOwner){
-            Log.d("ListFragment", "received ${it.size} products")
+        viewModel.loadProducts()
+
+        categoryVM.categories.observe(viewLifecycleOwner) {
+            Log.d("CATEGORY_DEBUG", "Observed size: ${it.size}")
+            header.updateList(it)
+        }
+
+        viewModel.products.observe(viewLifecycleOwner) {
             adapter.updateList(it)
+        }
+
+
+        viewModel.updateStatus.observe(viewLifecycleOwner) { success ->
+            if (success) {
+                viewModel.loadProducts()
+                viewModel.resetUpdateStatus()
+            }
         }
 
 

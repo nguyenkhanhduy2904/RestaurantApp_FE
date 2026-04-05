@@ -2,6 +2,7 @@ package com.example.restaurantapp2.repository
 
 import com.example.restaurantapp2.models.Product
 import com.example.restaurantapp2.models.ProductRequest
+import com.example.restaurantapp2.models.ProductResponse
 import com.example.restaurantapp2.network.RetrofitClient
 
 class ProductRepository {
@@ -19,6 +20,22 @@ class ProductRepository {
     suspend fun getProductById(productId: Int): Product {
         return api.getProductsById(productId)
 
+    }
+
+    suspend fun updateProduct(productId: Int, product: ProductRequest): Result<ProductResponse> {
+        return try {
+            val response = api.updateProduct(productId, product)
+
+            if (response.isSuccessful) {
+                Result.success(response.body()!!)
+            } else {
+                val errorMsg = response.errorBody()?.string() ?: "Unknown error"
+                Result.failure(Exception(errorMsg))
+            }
+
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
 //    fun getProducts(): List<Product> {

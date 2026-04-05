@@ -19,7 +19,7 @@ class ProductAdapter(
 
         fun bind(product: Product){
             binding.txtFoodName.text = product.productName
-            binding.txtFoodCategory.text = product.productCategory.toString()
+            binding.txtFoodCategory.text = product.categoryId.toString()
             binding.txtFoodPrice.text = product.finalPrice.toString()
 
             if(product.isDiscounted){

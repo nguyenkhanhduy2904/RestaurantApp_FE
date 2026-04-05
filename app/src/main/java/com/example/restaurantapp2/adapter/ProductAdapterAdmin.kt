@@ -21,7 +21,7 @@ class ProductAdapterAdmin (
 
         fun bind(product: Product){
             binding.txtFoodName.text = product.productName
-            binding.txtFoodCategory.text = product.productCategory.toString()
+            binding.txtFoodCategory.text = product.categoryId.toString()
             binding.txtFoodPrice.text = product.finalPrice.toString()
             binding.btnEdit.setOnClickListener {
                 onEditClick(product)
@@ -57,6 +57,7 @@ class ProductAdapterAdmin (
 
     fun updateList(newProducts: List<Product>) {
         Log.d("ProductAdapter", "updating with ${newProducts.size} products")
+        newProducts.forEach { Log.d("ProductAdapter", "Product: ${it.categoryId}") }
         (products as MutableList).clear()
         (products as MutableList).addAll(newProducts)
         notifyDataSetChanged()

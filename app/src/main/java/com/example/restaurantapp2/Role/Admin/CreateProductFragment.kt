@@ -11,25 +11,22 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.restaurantapp2.R
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
-import com.example.restaurantapp2.models.Product
 import com.example.restaurantapp2.models.ProductRequest
 import com.example.restaurantapp2.network.CloudinaryService
 import com.example.restaurantapp2.viewmodels.ProductVM
 import com.google.gson.Gson
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class CreateProductFragment : Fragment(R.layout.add_product_layout) {
 
-    val productId = arguments?.getInt("productId") ?: -1
+//    val productId = arguments?.getInt("productId") ?: -1
 
+    var productId : Int = -1
     var isEditMode : Boolean = false
 
 
@@ -71,7 +68,7 @@ class CreateProductFragment : Fragment(R.layout.add_product_layout) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val productId = arguments?.getInt("productId") ?: -1
+        productId = arguments?.getInt("productId") ?: -1
 
         if(productId ==-1){
             //create mode, do nothing
@@ -112,7 +109,7 @@ class CreateProductFragment : Fragment(R.layout.add_product_layout) {
         }
 
         btnSave.setOnClickListener{
-            handleCreateProduct()
+           handleSaveButton()
         }
 
         vm.createStatus.observe(viewLifecycleOwner) { success ->
@@ -125,6 +122,22 @@ class CreateProductFragment : Fragment(R.layout.add_product_layout) {
                 Toast.makeText(requireContext(), "Failed to create product", Toast.LENGTH_SHORT).show()
             }
         }
+        vm.updateStatus.observe(viewLifecycleOwner) { success ->
+            btnSave.isEnabled = true
+            if (success) {
+                Toast.makeText(requireContext(), "Product updated", Toast.LENGTH_SHORT).show()
+                handleBackFunction()
+            } else {
+                Toast.makeText(requireContext(), "Failed to update product", Toast.LENGTH_SHORT).show()
+            }
+        }
+        vm.errorMessage.observe(viewLifecycleOwner) { message ->
+            if (message.isNotEmpty()) {
+                Toast.makeText(requireContext(), "Error: $message", Toast.LENGTH_LONG).show()
+                Log.d("error message",message);
+            }
+        }
+
     }
 
     fun loadProductDetails(productId: Int) {
@@ -138,7 +151,12 @@ class CreateProductFragment : Fragment(R.layout.add_product_layout) {
             requireView().findViewById<EditText>(R.id.txtProductDescription).setText(product.productDescription)
 
             Glide.with(requireContext()).load(product.productThumbnailUrl).placeholder(R.drawable.default_food_img).into(requireView().findViewById<ImageButton>(R.id.btnPickImage))
+
+
              }
+        Log.d("check product id", productId.toString())
+
+
 
 
     }
@@ -147,9 +165,8 @@ class CreateProductFragment : Fragment(R.layout.add_product_layout) {
     fun handleBackFunction() {
         parentFragmentManager.popBackStack()
     }
-
-    fun handleCreateProduct() {
-        if (imageUri == null) {
+    fun handleSaveButton() {
+        if (imageUri == null && !isEditMode) {
             Toast.makeText(requireContext(), "Please choose an image", Toast.LENGTH_SHORT).show()
             return
         }
@@ -157,7 +174,18 @@ class CreateProductFragment : Fragment(R.layout.add_product_layout) {
 
         viewLifecycleOwner.lifecycleScope.launch {
             try {
-                val imgUrl = CloudinaryService.uploadImage(imageUri!!, requireContext())
+                val imgUrl = if (imageUri != null) {
+                    val uploadedUrl = CloudinaryService.uploadImage(imageUri!!, requireContext())
+
+                    if (uploadedUrl.isNullOrEmpty()) {
+                        throw Exception("Image upload failed")
+                    }
+
+                    uploadedUrl
+                } else {
+                    vm.selectedProduct.value?.productThumbnailUrl
+                        ?: throw IllegalStateException("Missing existing image")
+                }
 
                 val productName = requireView()
                     .findViewById<EditText>(R.id.txtProductName).text.toString()
@@ -172,18 +200,27 @@ class CreateProductFragment : Fragment(R.layout.add_product_layout) {
                 val productCategory = 1
 
                 val request = ProductRequest(
+                    productId = if(isEditMode) productId else null,
                     productName = productName,
                     productPrice = productPrice ?: 0.0,
                     productDescription = productDescription,
                     productThumbnailUrl = imgUrl,
-                    productCategory = productCategory
+                    categoryId = productCategory
                 )
+;
+
 
                 //Debug JSON
                 Log.d("JSON", Gson().toJson(request))
+                if(isEditMode){
+                    vm.updateProduct(productId, request)
+                }
+                else{
+                    vm.createProduct(request)
+                }
 
                 //Call ViewModel on MAIN thread
-                vm.createProduct(request)
+
 
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -191,7 +228,12 @@ class CreateProductFragment : Fragment(R.layout.add_product_layout) {
                 btnSave.isEnabled = true
             }
         }
+
     }
+
+
+
+
 
 
 
