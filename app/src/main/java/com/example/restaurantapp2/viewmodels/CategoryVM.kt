@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.restaurantapp2.models.Category
+import com.example.restaurantapp2.models.CategoryRequest
 import com.example.restaurantapp2.repository.CategoryRepository
 import kotlinx.coroutines.launch
 
@@ -45,6 +46,19 @@ class CategoryVM :ViewModel() {
                 _errorMessage.value = "Failed to load categories: ${e.message}"
             }
         }
+    }
+
+    fun createCategory(category: CategoryRequest) {
+        viewModelScope.launch {
+            try{
+                val result = repo.createCategory(category)
+
+            }catch (e:Exception){
+                Log.e("CATEGORY_DEBUG", "Error: ${e.message}")
+                _errorMessage.value = "Failed to add categories: ${e.message}"
+            }
+        }
+
     }
 
 }

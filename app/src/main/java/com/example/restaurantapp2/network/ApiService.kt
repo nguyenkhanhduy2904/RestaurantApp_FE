@@ -1,6 +1,7 @@
 package com.example.restaurantapp2.network
 
 import com.example.restaurantapp2.models.Category
+import com.example.restaurantapp2.models.CategoryRequest
 import com.example.restaurantapp2.models.Product
 import com.example.restaurantapp2.models.ProductRequest
 import com.example.restaurantapp2.models.ProductResponse
@@ -37,5 +38,8 @@ interface ApiService {
 
     @GET("category")
     suspend fun getCategories() : List<Category>
+
+    @POST("category")
+    suspend fun createCategory(@Body category: CategoryRequest): CategoryRequest
 
 }

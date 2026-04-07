@@ -4,10 +4,12 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.Spinner
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.restaurantapp2.R
@@ -16,8 +18,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
+import com.example.restaurantapp2.models.Category
 import com.example.restaurantapp2.models.ProductRequest
 import com.example.restaurantapp2.network.CloudinaryService
+import com.example.restaurantapp2.viewmodels.CategoryVM
 import com.example.restaurantapp2.viewmodels.ProductVM
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
@@ -29,11 +33,14 @@ class CreateProductFragment : Fragment(R.layout.add_product_layout) {
     var productId : Int = -1
     var isEditMode : Boolean = false
 
+    var selectedCategoryId: Int? = null
+    var cateIndex : Int =-1
 
     private lateinit var btnCancel : Button
     private lateinit var btnBack: ImageButton
     private lateinit var btnSave: Button
     private lateinit var btnPickImage: ImageButton
+    private lateinit var spnCategoryId: Spinner
 
     private var imageUri : Uri? = null
     private val pickImage =
@@ -52,6 +59,7 @@ class CreateProductFragment : Fragment(R.layout.add_product_layout) {
         }
 
     private val vm: ProductVM by viewModels()
+    private val categoryVM: CategoryVM by viewModels()
 
     override fun onResume() {
         super.onResume()
@@ -70,27 +78,31 @@ class CreateProductFragment : Fragment(R.layout.add_product_layout) {
 
         productId = arguments?.getInt("productId") ?: -1
 
-        if(productId ==-1){
-            //create mode, do nothing
-            isEditMode = false
-        }
-        else{
-            isEditMode = true
-            //edit mode, load product details and populate fields
-            loadProductDetails(productId)
 
-//             vm.selectedProduct.observe(viewLifecycleOwner){ product ->
-//                 requireView().findViewById<EditText>(R.id.txtProductName).setText(product.productName)
-//                 requireView().findViewById<EditText>(R.id.txtProductPrice).setText(product.productPrice.toString())
-//                 requireView().findViewById<EditText>(R.id.txtProductDescription).setText(product.productDescription)
-//                 // load image using Glide or similar library
-//             }
-        }
+
 
 
         btnCancel = view.findViewById<Button>(R.id.btnCancel)
         btnBack = view.findViewById<ImageButton>(R.id.ibtnBack)
         btnSave = view.findViewById<Button>(R.id.btnSave)
+        spnCategoryId = view.findViewById<Spinner>(R.id.spnCategory)
+
+        val spinnerAdapter = ArrayAdapter<Category>( this.requireContext(), android.R.layout.simple_spinner_item, mutableListOf())
+
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spnCategoryId.adapter = spinnerAdapter
+
+        categoryVM.categories.observe(viewLifecycleOwner){ categories ->
+            spinnerAdapter.clear()
+            spinnerAdapter.addAll(categories)
+            spinnerAdapter.notifyDataSetChanged()
+
+            trySetSpinnerSelection()
+
+
+
+
+        }
 
         btnPickImage = view.findViewById<ImageButton>(R.id.btnPickImage)
 
@@ -138,6 +150,18 @@ class CreateProductFragment : Fragment(R.layout.add_product_layout) {
             }
         }
 
+        if(productId ==-1){
+            //create mode, do nothing
+            isEditMode = false
+        }
+        else{
+            isEditMode = true
+            //edit mode, load product details and populate fields
+            loadProductDetails(productId)
+
+
+        }
+
     }
 
     fun loadProductDetails(productId: Int) {
@@ -150,15 +174,33 @@ class CreateProductFragment : Fragment(R.layout.add_product_layout) {
             requireView().findViewById<EditText>(R.id.txtProductPrice).setText(product.productPrice.toString())
             requireView().findViewById<EditText>(R.id.txtProductDescription).setText(product.productDescription)
 
+            selectedCategoryId = product.categoryId
+
+
+
             Glide.with(requireContext()).load(product.productThumbnailUrl).placeholder(R.drawable.default_food_img).into(requireView().findViewById<ImageButton>(R.id.btnPickImage))
 
+            trySetSpinnerSelection()
 
-             }
+        }
         Log.d("check product id", productId.toString())
 
 
 
 
+    }
+
+    fun trySetSpinnerSelection() {
+        val categories = categoryVM.categories.value
+        val categoryId = selectedCategoryId
+
+        if (categories != null && categoryId != null) {
+            val index = categories.indexOfFirst { it.categoryId == categoryId }
+
+            if (index != -1) {
+                spnCategoryId.setSelection(index)
+            }
+        }
     }
 
 
@@ -197,7 +239,9 @@ class CreateProductFragment : Fragment(R.layout.add_product_layout) {
                 val productDescription = requireView()
                     .findViewById<EditText>(R.id.txtProductDescription).text.toString()
 
-                val productCategory = 1
+//                val productCategory = 1// find the spinner and get selected category id
+                val productCategory = (spnCategoryId.selectedItem as? Category)?.categoryId
+                    ?: throw IllegalStateException("No category selected")
 
                 val request = ProductRequest(
                     productId = if(isEditMode) productId else null,

@@ -14,24 +14,24 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_login)
+        setContentView(R.layout.activity_login)//check this layout name!!!!!!
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
-        val btnAdmin = findViewById<Button>(R.id.admin_button)
-        val btnCustomer = findViewById<Button>(R.id.customer_button)
-
-        btnAdmin.setOnClickListener {
-            val intent = Intent(this, AdminActivity::class.java)
-            startActivity(intent)
-        }
-        btnCustomer.setOnClickListener {
-            val intent = Intent(this, CustomerActivity::class.java)
-            startActivity(intent)
-        }
+//        val btnAdmin = findViewById<Button>(R.id.admin_button)
+//        val btnCustomer = findViewById<Button>(R.id.customer_button)
+//
+//        btnAdmin.setOnClickListener {
+//            val intent = Intent(this, AdminActivity::class.java)
+//            startActivity(intent)
+//        }
+//        btnCustomer.setOnClickListener {
+//            val intent = Intent(this, CustomerActivity::class.java)
+//            startActivity(intent)
+//        }
     }
 
 

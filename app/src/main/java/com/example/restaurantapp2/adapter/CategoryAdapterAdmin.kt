@@ -3,6 +3,7 @@ package com.example.restaurantapp2.adapter
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.restaurantapp2.R
 import com.example.restaurantapp2.databinding.ItemCategoryBinding
@@ -24,6 +25,15 @@ class CategoryAdapterAdmin(
                 onCategoryClick(category)
             }
 
+            //Special case: "+ Add"
+            val isAddItem = category.categoryId == -1
+
+            if (isAddItem) {
+                //TODO: open another screen to create new category
+                Toast.makeText(binding.root.context, "Add new category clicked", Toast.LENGTH_SHORT).show()
+                return
+            }
+
 
             val isSelected = category.categoryId == selectedCategoryId
 
@@ -31,7 +41,6 @@ class CategoryAdapterAdmin(
                 binding.root.setBackgroundResource(R.drawable.bg_category_selected)
             } else {
                 binding.root.setBackgroundResource(android.R.color.transparent)
-
             }
         }
 

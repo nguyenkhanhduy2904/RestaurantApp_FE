@@ -14,6 +14,8 @@ import com.example.restaurantapp2.R
 import com.example.restaurantapp2.adapter.HeaderAdapter
 import com.example.restaurantapp2.adapter.HeaderAdapterAdmin
 import com.example.restaurantapp2.adapter.ProductAdapterAdmin
+import com.example.restaurantapp2.models.Category
+import com.example.restaurantapp2.models.CategoryRequest
 import com.example.restaurantapp2.viewmodels.CategoryVM
 import com.example.restaurantapp2.viewmodels.ProductVM
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -41,6 +43,10 @@ class ProductListFragment: Fragment(R.layout.fragment_product_list) {
                 }
 //
             },
+
+            categoryMap = emptyMap(),  // will be updated later when categories are loaded
+
+
             onDeleteClick = { product ->
                 // handle delete click, e.g. show confirmation dialog and delete product
                 Log.d("ProductListFragment", "Delete clicked for ${product.productName}")
@@ -49,9 +55,29 @@ class ProductListFragment: Fragment(R.layout.fragment_product_list) {
         val header = HeaderAdapterAdmin(mutableListOf(),
             onCategoryClick = { category ->
                 // handle category click, e.g. filter products by category
-                viewModel.filterProductsByCategory(category.categoryId)
-                Toast.makeText(requireContext(), "Category clicked: ${category.categoryName}", Toast.LENGTH_SHORT).show()
-                Log.d("ProductListFragment", "Category clicked: ${category.categoryName}" + "All product: "+  viewModel.allProducts.size + "Filtered product: " + viewModel.products.value?.size)
+                if(category.categoryId==-1){
+                    CreateCategoryDialogFragment{
+                        name -> Toast.makeText(requireContext(), "New category name: $name", Toast.LENGTH_SHORT).show()
+
+                        val cate = CategoryRequest(categoryId = 0, categoryName = name)   // id will be assigned by backend
+
+                        categoryVM.createCategory(cate)
+                    }.show(parentFragmentManager, "CreateCategoryDialog")
+
+                }
+                else {
+                    viewModel.filterProductsByCategory(category.categoryId)
+                    Toast.makeText(
+                        requireContext(),
+                        "Category clicked: ${category.categoryName}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    Log.d(
+                        "ProductListFragment",
+                        "Category clicked: ${category.categoryName}" + "All product: " + viewModel.allProducts.size + "Filtered product: " + viewModel.products.value?.size
+                    )
+                }
+
 
             }
         )
@@ -76,8 +102,17 @@ class ProductListFragment: Fragment(R.layout.fragment_product_list) {
 
 
         categoryVM.categories.observe(viewLifecycleOwner) {
+
             Log.d("CATEGORY_DEBUG", "Observed size: ${it.size}")
-            header.updateList(it)
+
+            val displayList = it.toMutableList()
+
+            displayList.add(Category(categoryId = -1, categoryName = "Add"))
+
+            header.updateList(displayList)
+
+            val map = it.associate {category -> category.categoryId to category.categoryName }
+            adapter.updateCategoryMap(map)
         }
 
         viewModel.products.observe(viewLifecycleOwner) {

@@ -6,4 +6,9 @@ data class Category(
 
 
 
-)
+
+){
+    override fun toString(): String {
+        return categoryName.toString()
+    }
+}

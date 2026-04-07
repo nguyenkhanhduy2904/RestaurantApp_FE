@@ -12,6 +12,7 @@ import com.example.restaurantapp2.models.Product
 
 class ProductAdapterAdmin (
     private val products : List<Product>,
+    private var categoryMap: Map<Int, String>,
     private val onEditClick: (Product) -> Unit,
     private val onDeleteClick: (Product) -> Unit
 ): RecyclerView.Adapter<ProductAdapterAdmin.ProductViewHolder>() {
@@ -21,7 +22,11 @@ class ProductAdapterAdmin (
 
         fun bind(product: Product){
             binding.txtFoodName.text = product.productName
-            binding.txtFoodCategory.text = product.categoryId.toString()
+
+
+            binding.txtFoodCategory.text = categoryMap[product.categoryId] ?: "Unknown Category"
+
+
             binding.txtFoodPrice.text = product.finalPrice.toString()
             binding.btnEdit.setOnClickListener {
                 onEditClick(product)
@@ -60,6 +65,11 @@ class ProductAdapterAdmin (
         newProducts.forEach { Log.d("ProductAdapter", "Product: ${it.categoryId}") }
         (products as MutableList).clear()
         (products as MutableList).addAll(newProducts)
+        notifyDataSetChanged()
+    }
+
+    fun updateCategoryMap(newMap: Map<Int, String>) {
+        categoryMap = newMap
         notifyDataSetChanged()
     }
 }
