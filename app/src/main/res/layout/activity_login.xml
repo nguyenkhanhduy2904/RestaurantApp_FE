@@ -140,14 +140,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="or"
-        app:layout_constraintBottom_toTopOf="@id/btnGoogle"
+        app:layout_constraintBottom_toTopOf="@id/btnLoginAsGoogle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/cardLogin" />
 
     <LinearLayout
-        android:id="@+id/btnGoogle"
+        android:id="@+id/btnLoginAsGoogle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="52dp"
@@ -186,7 +186,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btnGoogle">
+        app:layout_constraintTop_toBottomOf="@id/btnLoginAsGoogle">
 
         <TextView
             android:padding="5dp"
