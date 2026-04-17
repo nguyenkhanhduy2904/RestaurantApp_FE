@@ -249,7 +249,8 @@ class CreateProductFragment : Fragment(R.layout.add_product_layout) {
                     productPrice = productPrice ?: 0.0,
                     productDescription = productDescription,
                     productThumbnailUrl = imgUrl,
-                    categoryId = productCategory
+                    categoryId = productCategory,
+                    status = "ACTIVE"
                 )
 ;
 

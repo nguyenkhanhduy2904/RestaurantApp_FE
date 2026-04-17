@@ -59,7 +59,7 @@ class ProductListFragment: Fragment(R.layout.fragment_product_list) {
                     CreateCategoryDialogFragment{
                         name -> Toast.makeText(requireContext(), "New category name: $name", Toast.LENGTH_SHORT).show()
 
-                        val cate = CategoryRequest(categoryId = 0, categoryName = name)   // id will be assigned by backend
+                        val cate = CategoryRequest(categoryId = 0, categoryName = name, status = "ACTIVE")   // id will be assigned by backend
 
                         categoryVM.createCategory(cate)
                     }.show(parentFragmentManager, "CreateCategoryDialog")
@@ -107,7 +107,7 @@ class ProductListFragment: Fragment(R.layout.fragment_product_list) {
 
             val displayList = it.toMutableList()
 
-            displayList.add(Category(categoryId = -1, categoryName = "Add"))
+            displayList.add(Category(categoryId = -1, categoryName = "Add", status = "ACTIVE"))  // Add a special category for "Add"
 
             header.updateList(displayList)
 

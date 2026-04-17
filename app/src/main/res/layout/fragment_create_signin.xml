@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardLogin"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:cardBackgroundColor="@color/red"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.361"
+        app:layout_constraintWidth_percent="0.8"
+        android:clipChildren="false"
+        android:clipToPadding="false">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp">
+
+            <TextView
+                android:id="@+id/tvLogin"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:gravity="bottom"
+                android:paddingBottom="5dp"
+                android:text="Email or Phone number"
+                android:textColor="@color/white"
+                app:layout_constraintDimensionRatio="15:2"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/ILUsername"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/ILUsername"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_edit_text_with_border_white"
+
+                app:boxBackgroundMode="none"
+                app:hintEnabled="false"
+                app:layout_constraintTop_toBottomOf="@id/tvLogin"
+                app:layout_constraintBottom_toTopOf="@id/tvLoginPassword">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etUsername"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="12dp" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/tvLoginPassword"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:gravity="bottom"
+                android:paddingBottom="5dp"
+                android:text="Password"
+                android:textColor="@color/white"
+                app:layout_constraintDimensionRatio="15:2"
+                app:layout_constraintTop_toBottomOf="@id/ILUsername"
+                app:layout_constraintBottom_toTopOf="@id/ILPassword"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/ILPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_edit_text_with_border_white"
+
+                app:boxBackgroundMode="none"
+                app:endIconMode="password_toggle"
+                app:hintEnabled="false"
+                app:layout_constraintTop_toBottomOf="@id/tvLoginPassword"
+                app:layout_constraintBottom_toTopOf="@id/tvConfirmedPassword">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="12dp" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+
+            <TextView
+                android:id="@+id/tvConfirmedPassword"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:gravity="bottom"
+                android:paddingBottom="5dp"
+                android:text="Confirmed Password"
+                android:textColor="@color/white"
+                app:layout_constraintDimensionRatio="15:2"
+                app:layout_constraintTop_toBottomOf="@id/ILPassword"
+                app:layout_constraintBottom_toTopOf="@id/ILConfirmedPassword"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/ILConfirmedPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_edit_text_with_border_white"
+
+                app:boxBackgroundMode="none"
+                app:endIconMode="password_toggle"
+                app:hintEnabled="false"
+                app:layout_constraintTop_toBottomOf="@id/tvConfirmedPassword"
+                app:layout_constraintBottom_toTopOf="@id/btnNext">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etConfirmedPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="12dp" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnNext"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:backgroundTint="@color/white"
+                android:text="Next"
+                android:textColor="@color/black"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.896"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ILConfirmedPassword"
+                app:layout_constraintVertical_bias="0.705"
+                app:layout_constraintWidth_percent="0.5"
+                app:rippleColor="@color/light_grey" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

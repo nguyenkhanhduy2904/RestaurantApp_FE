@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    tools:context=".LoginActivity">
+    tools:context=".LoginFragment">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardLogin"
@@ -41,10 +41,10 @@
                 android:textColor="@color/white"
                 app:layout_constraintDimensionRatio="15:2"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/txtLoginName"/>
+                app:layout_constraintBottom_toTopOf="@id/ILUsername"/>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/txtLoginName"
+                android:id="@+id/ILUsername"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_edit_text_with_border_white"
@@ -55,6 +55,7 @@
                 app:layout_constraintBottom_toTopOf="@id/tvLoginPassword">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etUsername"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
@@ -72,11 +73,11 @@
                 android:text="Password"
                 android:textColor="@color/white"
                 app:layout_constraintDimensionRatio="15:2"
-                app:layout_constraintTop_toBottomOf="@id/txtLoginName"
-                app:layout_constraintBottom_toTopOf="@id/txtLoginPassword"/>
+                app:layout_constraintTop_toBottomOf="@id/ILUsername"
+                app:layout_constraintBottom_toTopOf="@id/ILPassword"/>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/txtLoginPassword"
+                android:id="@+id/ILPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_edit_text_with_border_white"
@@ -88,6 +89,7 @@
                 app:layout_constraintBottom_toTopOf="@id/tvForgotPassword">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etPassword"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
@@ -111,7 +113,7 @@
                 android:textSize="14sp"
                 app:layout_constraintBottom_toTopOf="@id/btnLogin"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/txtLoginPassword" />
+                app:layout_constraintTop_toBottomOf="@id/ILPassword" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnLogin"
@@ -124,7 +126,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.497"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/txtLoginPassword"
+                app:layout_constraintTop_toBottomOf="@id/ILPassword"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintWidth_percent="0.5"
                 app:rippleColor="@color/light_grey"
@@ -197,6 +199,7 @@
 
 
         <TextView
+            android:id="@+id/tvSignupLocal"
             android:padding="5dp"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"

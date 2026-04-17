@@ -7,7 +7,8 @@ data class Product(
     val productDescription : String,
     val categoryId : Int,
     val productThumbnailUrl : String,
-    val productPriceReduction : Double
+    val productPriceReduction : Double,
+    val status : String
 ) {
     val isDiscounted : Boolean
 //        get() = productPriceReduction >0.0
