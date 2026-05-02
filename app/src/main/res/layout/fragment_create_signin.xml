@@ -31,7 +31,7 @@
                 android:layout_height="0dp"
                 android:gravity="bottom"
                 android:paddingBottom="5dp"
-                android:text="Email or Phone number"
+                android:text="User name:"
                 android:textColor="@color/white"
                 app:layout_constraintDimensionRatio="15:2"
                 app:layout_constraintTop_toTopOf="parent"

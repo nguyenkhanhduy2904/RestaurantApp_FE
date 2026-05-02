@@ -11,12 +11,13 @@
         android:title="user list"
         android:icon="@drawable/ic_users_foreground"/>
 
-    <item
-        android:id="@+id/misetting"
-        android:title="setting"
-        android:icon="@drawable/ic_setting_foreground"/>
+
     <item
         android:id="@+id/mi_order_list"
         android:title="order list"
         android:icon="@drawable/ic_orders_foreground"/>
+    <item
+        android:id="@+id/mi_account_info"
+        android:title="account info"
+        android:icon="@drawable/ic_account_foreground"/>
 </menu>

@@ -7,6 +7,7 @@ data class ProductRequest(
     val productDescription: String,
     val productThumbnailUrl: String,
     val categoryId: Int,
-    val status : String
+    val status : String,
+    val priceReduction : Float
 
 )

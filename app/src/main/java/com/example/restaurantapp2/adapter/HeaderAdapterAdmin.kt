@@ -3,6 +3,7 @@ package com.example.restaurantapp2.adapter
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.restaurantapp2.databinding.ItemHeaderBinding
@@ -12,6 +13,7 @@ import com.example.restaurantapp2.models.Category
 class HeaderAdapterAdmin(
     private val categories: MutableList<Category> = mutableListOf<Category>(),
     private val onCategoryClick: (Category) -> Unit
+
 ) : RecyclerView.Adapter<HeaderAdapterAdmin.HeaderViewHolder>() {
 
     private val categoryAdapter = CategoryAdapterAdmin(mutableListOf(), onCategoryClick)
@@ -29,7 +31,11 @@ class HeaderAdapterAdmin(
                 )
                 adapter = categoryAdapter
             }
+
+
         }
+
+
 
         fun bind(categories: List<Category>) {
             categoryAdapter.updateList(categories)

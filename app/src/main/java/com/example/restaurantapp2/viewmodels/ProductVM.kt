@@ -44,10 +44,13 @@ class ProductVM :ViewModel() {
         viewModelScope.launch {
             try {
                 val data = repo.getProducts()
-                allProducts = data          //store original
-                _products.value = data      //show all
+                val activeProducts = data.filter { it.status == "ACTIVE" }
+
+                allProducts = activeProducts
+                _products.value = activeProducts
                 allProducts.forEach {
                     Log.d("ProductVM", "Loaded product cate id: ${it.categoryId}")
+                    Log.d("ProductVM", it.toString())
                 }
             } catch (e: Exception) {
                 Log.e("ProductVM", "error: ${e.message}")
@@ -110,5 +113,16 @@ class ProductVM :ViewModel() {
         } ?: allProducts
 
         _products.value = result
+    }
+
+    fun searchProducts(query: String) {
+        if (query.isBlank()) {
+            _products.value = allProducts
+            return
+        }
+
+        _products.value = allProducts.filter {
+            it.productName.contains(query, ignoreCase = true)
+        }
     }
 }

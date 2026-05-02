@@ -21,7 +21,7 @@ class CreateCategoryDialogFragment(
         dialog.setContentView(view)
 
         val edtName = view.findViewById<EditText>(R.id.edtCategoryName)
-        val btnSave = view.findViewById<Button>(R.id.btnSave)
+        val btnSave = view.findViewById<Button>(R.id.btnNextAction)
 
         btnSave.setOnClickListener {
             val name = edtName.text.toString().trim()

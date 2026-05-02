@@ -34,6 +34,30 @@ class CreateSigninFragment: Fragment(R.layout.fragment_create_signin) {
             val password = etPassword.text.toString()
             val confirmPassword = etConfirmPassword.text.toString()
 
+            val missingFields = mutableListOf<String>()
+            if(username.isBlank()){
+                missingFields.add("Username")
+                etPassword.error = "Required"
+            }
+            if(password.isBlank()){
+                missingFields.add("Password")
+                etUserName.error = "Required"
+
+            }
+            if(confirmPassword.isBlank()){
+                missingFields.add("Confirmed Password")
+                etConfirmPassword.error = "Required"
+
+            }
+            if (missingFields.isNotEmpty()) {
+                Toast.makeText(
+                    requireContext(),
+                    "Please enter: ${missingFields.joinToString(", ")}",
+                    Toast.LENGTH_SHORT
+                ).show()
+                return@setOnClickListener
+            }
+
             if(password != confirmPassword){
                 Toast.makeText(requireContext(), "Password and Confirm Password do not match", Toast.LENGTH_LONG).show()
                 btnNext.isEnabled = true
@@ -68,16 +92,15 @@ class CreateSigninFragment: Fragment(R.layout.fragment_create_signin) {
 //                        val userInfo = UserProfile(
 //
 //                        )
-                        val map = data as UserProfile
-
-
-
+                        val userProfile = data as UserProfile
+                        Log.d("UserProfile data check", userProfile.toString())
                         val moreInfoFragment = MoreInfoFragment()
                         val bundle = Bundle()
-//                        bundle.putParcelable("userInfo", )
+                        bundle.putParcelable("userInfo", userProfile)
+                        moreInfoFragment.arguments = bundle
 
                         parentFragmentManager.beginTransaction()
-                            .replace(R.id.flAuthContainer, MoreInfoFragment())
+                            .replace(R.id.flAuthContainer, moreInfoFragment)
                             .addToBackStack(null)
                             .commit()
 

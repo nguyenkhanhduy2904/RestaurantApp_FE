@@ -12,11 +12,11 @@
         android:icon="@drawable/ic_cart_foreground"/>
 
     <item
-        android:id="@+id/misetting"
-        android:title="setting"
-        android:icon="@drawable/ic_setting_foreground"/>
-    <item
         android:id="@+id/miorder_status"
         android:title="order status"
         android:icon="@drawable/ic_order_status_foreground"/>
+    <item
+        android:id="@+id/mi_account_info"
+        android:title="Account info"
+        android:icon="@drawable/ic_account_foreground"/>
 </menu>

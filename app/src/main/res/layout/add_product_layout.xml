@@ -215,7 +215,7 @@
                 android:layout_weight="2"
                 android:layout_height="match_parent"/>
             <Button
-                android:id="@+id/btnSave"
+                android:id="@+id/btnNextAction"
                 android:text="Luu"
                 android:backgroundTint="@color/green"
                 android:layout_width="wrap_content"

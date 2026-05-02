@@ -7,14 +7,13 @@ data class Product(
     val productDescription : String,
     val categoryId : Int,
     val productThumbnailUrl : String,
-    val productPriceReduction : Double,
+    val priceReduction : Float,
     val status : String
 ) {
     val isDiscounted : Boolean
-//        get() = productPriceReduction >0.0
-        get() = false
+        get() = priceReduction >0.0
+
     val finalPrice : Double
-//        get() = productPrice * (1.0 - productPriceReduction)
-        get() = productPrice
+        get() = productPrice * (1.0 - priceReduction / 100.0)
 
 }

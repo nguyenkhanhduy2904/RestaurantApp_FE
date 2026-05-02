@@ -1,31 +1,105 @@
 package com.example.restaurantapp2
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.restaurantapp2.Role.Admin.AdminActivity
+import com.example.restaurantapp2.Role.Customer.CustomerActivity
+import com.example.restaurantapp2.Utils.AuthManager
+import com.example.restaurantapp2.Utils.SessionManager
+import com.example.restaurantapp2.data.AppDatabase
+import com.example.restaurantapp2.models.CartItem
+import com.example.restaurantapp2.models.DeviceTokenRequest
 import com.example.restaurantapp2.models.UserProfile
 import com.example.restaurantapp2.repository.AuthRepository
+import com.example.restaurantapp2.repository.CartRepository
+import com.example.restaurantapp2.repository.DeviceTokenRepository
+import com.example.restaurantapp2.repository.OrderRepository
+import com.example.restaurantapp2.viewmodels.CartVM
+import com.example.restaurantapp2.viewmodels.CartVMFactory
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
+import com.google.firebase.messaging.FirebaseMessaging
+import com.google.firebase.messaging.FirebaseMessagingService
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 
 class LoginFragment : Fragment(R.layout.fragment_login) {
 
+    private lateinit var googleLauncher: ActivityResultLauncher<Intent>
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val btnLoginLocal = view.findViewById<MaterialButton>(R.id.btnLogin)
-        btnLoginLocal.setOnClickListener {
+        val authManager = AuthManager(requireContext())
 
+        val btnForgotPassword = view.findViewById<TextView>(R.id.tvForgotPassword)
+        btnForgotPassword.setOnClickListener{
+            val dialog = ResetPasswordBottomDialogFragment()
+            dialog.show(parentFragmentManager, "ResetPasswordDialog")
+        }
+
+        googleLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+
+            if (result.resultCode == Activity.RESULT_OK) {
+                val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+
+                try {
+                    val account = task.getResult(ApiException::class.java)
+                    val idToken = account.idToken
+
+                    if (idToken == null) {
+                        Log.d("idToken", "id token was null")
+                        Toast.makeText(requireContext(), "Id token null", Toast.LENGTH_SHORT).show()
+                        return@registerForActivityResult
+                    }
+
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        try {
+                            val user = authManager.loginWithGoogle(idToken)
+
+
+                            if (user != null) {
+                                val session = SessionManager(requireContext())
+                                session.saveUser(userId = user.userId, userRole = user.userRole, loginMethod = "GOOGLE")
+                                session.isLoggedIn()
+
+                                navigateUser(user)
+                                Log.d("Google sign in", "User data is " + user.userRole + user.userName + user.userId + user.status)
+                            }
+                            else{
+                                Log.d("Google sign in", "User data is null" )
+                            }
+
+                        } catch (e: Exception) {
+                            Log.e("GoogleLogin", "Error: ${e.message}", e)  // add this
+                            Toast.makeText(requireContext(), e.message, Toast.LENGTH_SHORT).show()
+                        }
+                    }
+
+                } catch (e: ApiException) {
+                    Log.e("GoogleLogin", "Error: ${e.message}", e)  // add this
+                    Toast.makeText(requireContext(), "Google sign-in failed", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+
+        btnLoginLocal.setOnClickListener {
             btnLoginLocal.isEnabled = false
 
             val etUsername = view.findViewById<TextInputEditText>(R.id.etUsername)
@@ -34,71 +108,31 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
             val username = etUsername.text.toString()
             val password = etPassword.text.toString()
 
-
-
-            val authRepo = AuthRepository()
-
             viewLifecycleOwner.lifecycleScope.launch {
-                try{
-                    val response = authRepo.login(
-                        mapOf(
-                            "username" to username,
-                            "password" to password
-                        )
-                    )
+                try {
+                    val user = authManager.loginAsLocal(username, password)
 
-                    if (response.errorMessage != null) {
-                        Toast.makeText(requireContext(), "Login failed: ${response.errorMessage}", Toast.LENGTH_LONG).show()
-                        btnLoginLocal.isEnabled = true
+
+                    if (user != null && user.status !="LOCK") {
+                        val session = SessionManager(requireContext())
+                        session.saveUser(userId = user.userId, userRole = user.userRole, loginMethod = "LOCAL")
+                        navigateUser(user)
                     }
-                    else {
-                        btnLoginLocal.isEnabled = true
-                        val data = response.data
-                        Log.d("LoginActivity", "Login successful, data: $data")
-
-                        val userProfile = UserProfile(
-                            userId = (data?.get("userId") as? Double)?.toInt() ?: 0,
-                            userName = data?.get("userName") as? String ?: "",
-                            userAddress = data?.get("userAddress") as? String,
-                            userPhone = data?.get("userPhone") as? String,
-                            userEmail = data?.get("userEmail") as? String,
-                            userRole = data?.get("userRole") as? String ?: "",
-                            status = data?.get("status") as? String ?: ""
-                        )
-                        if (userProfile.userRole == "ADMIN") {
-                            val intent = Intent(requireContext(), AdminActivity::class.java)
-////                        intent.putExtra("userProfile", userProfile)
-                            startActivity(intent)
-                            Log.d(
-                                "LoginActivity",
-                                "this was an admin, status: ${userProfile.status}"
-                            )
-                        }
-
-
-
-                        Toast.makeText(requireContext(), "Login successful!", Toast.LENGTH_LONG)
-                            .show()
+                    if(user != null && user.status =="LOCK"){
+                        Toast.makeText(requireContext(), "Your Account have been lock",Toast.LENGTH_SHORT).show()
+                        return@launch
                     }
 
-                }
-                catch (e: HttpException){
-                    if (e.code() == 401) {
-                        Log.e("API", "Invalid credentials")
-                        Toast.makeText(requireContext(), "Invalid username or password", Toast.LENGTH_LONG).show()
-                        btnLoginLocal.isEnabled = true
-                    } else {
-                        Log.e("API", "HTTP error: ${e.code()}")
-                        Toast.makeText(requireContext(), "Login failed: HTTP error ${e.code()}", Toast.LENGTH_LONG).show()
-                        btnLoginLocal.isEnabled = true
+                } catch (e: HttpException) {
+                    when (e.code()) {
+                        401 -> Toast.makeText(context, "Wrong username or password", Toast.LENGTH_SHORT).show()
+                        500 -> Toast.makeText(context, "Server error", Toast.LENGTH_SHORT).show()
+                        else -> Toast.makeText(context, "Unknown error", Toast.LENGTH_SHORT).show()
                     }
-                }catch (e: Exception){
-                    Log.e("API", "Error: ${e.message}")
+                } finally {
                     btnLoginLocal.isEnabled = true
                 }
-
             }
-
 
         }
 
@@ -111,9 +145,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
 
             Toast.makeText(requireContext(), "Clicked create account", Toast.LENGTH_LONG).show()
         }
-
-
-
+        val btnLoginAsGoogle = view.findViewById<View>(R.id.btnLoginAsGoogle)
 
 
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -123,12 +155,23 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
 
         val googleSignInClient = GoogleSignIn.getClient(requireContext(), gso)
 
-        val btnLoginAsGoogle = view.findViewById<View>(R.id.btnLoginAsGoogle)
         btnLoginAsGoogle.setOnClickListener {
-            val signInIntent = googleSignInClient.signInIntent
-            startActivityForResult(signInIntent, 100) // RC_SIGN_IN = 100
-
+            googleLauncher.launch(googleSignInClient.signInIntent)
         }
+
+
+
+    }
+
+    private fun navigateUser(user: UserProfile) {
+        val intent = when (user.userRole) {
+            "ADMIN" -> Intent(requireContext(), AdminActivity::class.java)
+            "CUSTOMER" -> Intent(requireContext(), CustomerActivity::class.java)
+            else -> return
+        }
+
+        intent.putExtra("user", user)
+        startActivity(intent)
     }
 
 
@@ -194,10 +237,6 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
 
                     }
                 }
-
-
-
-
 
             } catch (e: ApiException) {
                 Toast.makeText(requireContext(), "Sign in failed: ${e.statusCode}", Toast.LENGTH_LONG).show()

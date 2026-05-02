@@ -10,6 +10,7 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.Spinner
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.restaurantapp2.R
@@ -23,10 +24,12 @@ import com.example.restaurantapp2.models.ProductRequest
 import com.example.restaurantapp2.network.CloudinaryService
 import com.example.restaurantapp2.viewmodels.CategoryVM
 import com.example.restaurantapp2.viewmodels.ProductVM
+import com.google.android.material.slider.Slider
+import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
 
-class CreateProductFragment : Fragment(R.layout.add_product_layout) {
+class CreateProductFragment : Fragment(R.layout.add_product_layout2) {
 
 //    val productId = arguments?.getInt("productId") ?: -1
 
@@ -41,6 +44,10 @@ class CreateProductFragment : Fragment(R.layout.add_product_layout) {
     private lateinit var btnSave: Button
     private lateinit var btnPickImage: ImageButton
     private lateinit var spnCategoryId: Spinner
+
+    private lateinit var slider : Slider
+    private lateinit var switch : SwitchMaterial
+    private lateinit var txtReduction : TextView
 
     private var imageUri : Uri? = null
     private val pickImage =
@@ -84,8 +91,11 @@ class CreateProductFragment : Fragment(R.layout.add_product_layout) {
 
         btnCancel = view.findViewById<Button>(R.id.btnCancel)
         btnBack = view.findViewById<ImageButton>(R.id.ibtnBack)
-        btnSave = view.findViewById<Button>(R.id.btnSave)
+        btnSave = view.findViewById<Button>(R.id.btnNextAction)
         spnCategoryId = view.findViewById<Spinner>(R.id.spnCategory)
+
+        slider = view.findViewById<Slider>(R.id.slPriceReduce)
+        switch = view.findViewById<SwitchMaterial>(R.id.switchOption)
 
         val spinnerAdapter = ArrayAdapter<Category>( this.requireContext(), android.R.layout.simple_spinner_item, mutableListOf())
 
@@ -98,10 +108,6 @@ class CreateProductFragment : Fragment(R.layout.add_product_layout) {
             spinnerAdapter.notifyDataSetChanged()
 
             trySetSpinnerSelection()
-
-
-
-
         }
 
         btnPickImage = view.findViewById<ImageButton>(R.id.btnPickImage)
@@ -122,6 +128,10 @@ class CreateProductFragment : Fragment(R.layout.add_product_layout) {
 
         btnSave.setOnClickListener{
            handleSaveButton()
+        }
+        txtReduction = view.findViewById<TextView>(R.id.txtProductPriceReduction)
+        slider.addOnChangeListener { _, value, _ ->
+            txtReduction.text = "${value.toFloat()}%"
         }
 
         vm.createStatus.observe(viewLifecycleOwner) { success ->
@@ -162,6 +172,8 @@ class CreateProductFragment : Fragment(R.layout.add_product_layout) {
 
         }
 
+
+
     }
 
     fun loadProductDetails(productId: Int) {
@@ -176,6 +188,8 @@ class CreateProductFragment : Fragment(R.layout.add_product_layout) {
 
             selectedCategoryId = product.categoryId
 
+            slider.value = product.priceReduction.toFloat()
+            switch.isChecked = product.status == "ACTIVE"
 
 
             Glide.with(requireContext()).load(product.productThumbnailUrl).placeholder(R.drawable.default_food_img).into(requireView().findViewById<ImageButton>(R.id.btnPickImage))
@@ -243,6 +257,9 @@ class CreateProductFragment : Fragment(R.layout.add_product_layout) {
                 val productCategory = (spnCategoryId.selectedItem as? Category)?.categoryId
                     ?: throw IllegalStateException("No category selected")
 
+                val status = if (switch.isChecked) "ACTIVE" else "NOT ACTIVE"
+                val reduction = slider.value
+
                 val request = ProductRequest(
                     productId = if(isEditMode) productId else null,
                     productName = productName,
@@ -250,8 +267,10 @@ class CreateProductFragment : Fragment(R.layout.add_product_layout) {
                     productDescription = productDescription,
                     productThumbnailUrl = imgUrl,
                     categoryId = productCategory,
-                    status = "ACTIVE"
+                    status = status,
+                    priceReduction = reduction
                 )
+                Log.d("Prod request", request.toString())
 ;
 
 

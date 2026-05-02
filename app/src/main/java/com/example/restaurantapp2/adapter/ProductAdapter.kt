@@ -7,11 +7,16 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.restaurantapp2.R
+import com.example.restaurantapp2.Utils.convertedPrice
 import com.example.restaurantapp2.databinding.ItemProductBinding
 import com.example.restaurantapp2.models.Product
 
 class ProductAdapter(
-    private val products : List<Product>
+    private val products : List<Product>,
+    private val onAddClick: (Product) -> Unit,
+    private var categoryMap: Map<Int, String>,
+    private val onViewDetailClick : (Product) -> Unit
+
 ): RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
 
 
@@ -19,12 +24,15 @@ class ProductAdapter(
 
         fun bind(product: Product){
             binding.txtFoodName.text = product.productName
-            binding.txtFoodCategory.text = product.categoryId.toString()
-            binding.txtFoodPrice.text = product.finalPrice.toString()
+            binding.txtFoodCategory.text = categoryMap[product.categoryId] ?: "Unknown Category"
+            binding.txtFoodPrice.text = convertedPrice(product.finalPrice)
+            binding.btnAddToCart.setOnClickListener {
+                onAddClick(product)   // tell Adapter
+            }
 
             if(product.isDiscounted){
                 binding.txtPriceReduction.visibility = View.VISIBLE
-                binding.txtPriceReduction.text = product.productPriceReduction.toString()
+                binding.txtPriceReduction.text = product.priceReduction.toString()+ "%"
             }
             else{
                 binding.txtPriceReduction.visibility = View.GONE
@@ -49,12 +57,21 @@ class ProductAdapter(
 
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
         holder.bind(products[position])
+        val product = products[position]
+        holder.itemView.setOnClickListener {
+            onViewDetailClick(product)   // tell Fragment
+        }
     }
 
     fun updateList(newProducts: List<Product>) {
         Log.d("ProductAdapter", "updating with ${newProducts.size} products")
         (products as MutableList).clear()
         (products as MutableList).addAll(newProducts)
+        notifyDataSetChanged()
+    }
+
+    fun updateCategoryMap(newMap: Map<Int, String>) {
+        categoryMap = newMap
         notifyDataSetChanged()
     }
 

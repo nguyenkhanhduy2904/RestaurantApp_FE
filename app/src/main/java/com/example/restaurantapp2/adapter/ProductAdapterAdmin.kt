@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.restaurantapp2.R
+import com.example.restaurantapp2.Utils.convertedPrice
 import com.example.restaurantapp2.databinding.ItemAdminProductBinding
 import com.example.restaurantapp2.models.Product
 
@@ -27,13 +28,13 @@ class ProductAdapterAdmin (
             binding.txtFoodCategory.text = categoryMap[product.categoryId] ?: "Unknown Category"
 
 
-            binding.txtFoodPrice.text = product.finalPrice.toString()
+            binding.txtFoodPrice.text = convertedPrice(product.finalPrice)
             binding.btnEdit.setOnClickListener {
                 onEditClick(product)
             }
             if(product.isDiscounted){
                 binding.txtPriceReduction.visibility = View.VISIBLE
-                binding.txtPriceReduction.text = product.productPriceReduction.toString()
+                binding.txtPriceReduction.text = product.priceReduction.toString() + "%"
             }
             else{
                 binding.txtPriceReduction.visibility = View.GONE

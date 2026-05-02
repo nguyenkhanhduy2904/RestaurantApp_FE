@@ -3,15 +3,15 @@ package com.example.restaurantapp2.Role.Admin
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.EditText
 import android.widget.Toast
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.restaurantapp2.R
-import com.example.restaurantapp2.adapter.HeaderAdapter
 import com.example.restaurantapp2.adapter.HeaderAdapterAdmin
 import com.example.restaurantapp2.adapter.ProductAdapterAdmin
 import com.example.restaurantapp2.models.Category
@@ -39,7 +39,6 @@ class ProductListFragment: Fragment(R.layout.fragment_product_list) {
                     replace(R.id.flFragment, CreateProductFragment::class.java, bundle)
                     addToBackStack(null)
                     commit()
-
                 }
 //
             },
@@ -79,19 +78,19 @@ class ProductListFragment: Fragment(R.layout.fragment_product_list) {
                 }
 
 
-            }
+            },
+
         )
 
-
-
-
-
-
-
-
-        view.findViewById<RecyclerView>(R.id.rvProductList).apply {
+        view.findViewById<RecyclerView>(R.id.rvCartList).apply {
             layoutManager = LinearLayoutManager(requireContext())
             this.adapter = ConcatAdapter(header,adapter)
+        }
+        val etSearch = view.findViewById<EditText>(R.id.edtSearch)
+
+        etSearch.addTextChangedListener {
+            val query = it.toString()
+            viewModel.searchProducts(query)
         }
 
         viewModel.loadProducts()

@@ -5,8 +5,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.restaurantapp2.databinding.ItemHeaderBinding
 import com.example.restaurantapp2.databinding.ItemProductBinding
+import com.example.restaurantapp2.models.Category
 
-class HeaderAdapter : RecyclerView.Adapter<HeaderAdapter.HeaderViewHolder>() {
+class HeaderAdapter (
+    private val categories: MutableList<Category> = mutableListOf<Category>(),
+    private val onCategoryClick: (Category) -> Unit
+): RecyclerView.Adapter<HeaderAdapter.HeaderViewHolder>() {
 
     inner class HeaderViewHolder(private val binding: ItemHeaderBinding)
         : RecyclerView.ViewHolder(binding.root) {
