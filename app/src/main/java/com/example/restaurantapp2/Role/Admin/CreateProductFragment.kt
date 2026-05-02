@@ -53,6 +53,20 @@ class CreateProductFragment : Fragment(R.layout.add_product_layout2) {
     private val pickImage =
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
             uri?.let {
+
+                // Check file size before accepting
+                val fileSizeBytes = requireContext().contentResolver
+                    .openFileDescriptor(it, "r")?.statSize ?: 0L
+                val maxSizeBytes = 5 * 1024 * 1024 // 5 MB
+
+                if (fileSizeBytes > maxSizeBytes) {
+                    Toast.makeText(
+                        requireContext(),
+                        "Image is too large (max 5MB). Please choose a smaller image.",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    return@let // reject, don't assign imageUri
+                }
                 imageUri = it
 
                 val btnPickImage = requireView().findViewById<ImageButton>(R.id.btnPickImage)
