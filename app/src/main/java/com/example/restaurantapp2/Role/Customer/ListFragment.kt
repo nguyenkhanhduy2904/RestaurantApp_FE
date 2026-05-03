@@ -93,11 +93,11 @@ class ListFragment: Fragment(R.layout.fragment_list){
                 }
                 else {
                     productVM.filterProductsByCategory(category.categoryId)
-                    Toast.makeText(
-                        requireContext(),
-                        "Category clicked: ${category.categoryName}",
-                        Toast.LENGTH_SHORT
-                    ).show()
+//                    Toast.makeText(
+//                        requireContext(),
+//                        "Category clicked: ${category.categoryName}",
+//                        Toast.LENGTH_SHORT
+//                    ).show()
                     Log.d(
                         "ProductListFragment",
                         "Category clicked: ${category.categoryName}" + "All product: " + productVM.allProducts.size + "Filtered product: " + productVM.products.value?.size

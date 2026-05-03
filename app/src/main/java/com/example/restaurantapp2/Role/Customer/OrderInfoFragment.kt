@@ -48,8 +48,10 @@ class OrderInfoFragment: Fragment(R.layout.fragment_edit_order) {
         val btnConfirm = view.findViewById<View>(R.id.btnConfirm)
 
         btnConfirm.setOnClickListener {
+            btnConfirm.isEnabled = false
             if(cartVM.cartUIList.value.isNullOrEmpty()){
                 Toast.makeText(requireContext(),"Your Cart is empty", Toast.LENGTH_SHORT).show()
+                btnConfirm.isEnabled = true
                 return@setOnClickListener
             }
             val address = (btnAddress as TextInputEditText).text.toString()
@@ -69,6 +71,7 @@ class OrderInfoFragment: Fragment(R.layout.fragment_edit_order) {
             val selectedId = selectedPaymentMethod.checkedRadioButtonId
             if (selectedId == -1) {
                 Toast.makeText(requireContext(), "Please select payment method", Toast.LENGTH_SHORT).show()
+                btnConfirm.isEnabled = true
                 return@setOnClickListener
             }
 
@@ -81,6 +84,7 @@ class OrderInfoFragment: Fragment(R.layout.fragment_edit_order) {
 
             if (userId == null) {
                 Toast.makeText(requireContext(), "User not available", Toast.LENGTH_SHORT).show()
+                btnConfirm.isEnabled = true
                 return@setOnClickListener
             }
 
@@ -89,6 +93,7 @@ class OrderInfoFragment: Fragment(R.layout.fragment_edit_order) {
                 if (order != null) {
                     // reset so it doesn't re-trigger on back navigation
                     cartVM.resetSuccess()
+                    btnConfirm.isEnabled = true
 
                     // go back to previous fragment
                     parentFragmentManager.popBackStack()

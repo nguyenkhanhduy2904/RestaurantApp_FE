@@ -4,6 +4,7 @@ import android.content.IntentFilter
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -74,6 +75,10 @@ class CartFragment: Fragment(R.layout.fragment_cart){
         }
 
         binding.btnCreateOrder.setOnClickListener {
+            if(cartVM.cartUIList.value.isNullOrEmpty()){
+                Toast.makeText(requireContext(),"Your Cart is empty", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
             parentFragmentManager.beginTransaction()
                 .replace(R.id.flFragment, OrderInfoFragment())
                 .addToBackStack(null)
@@ -96,7 +101,7 @@ class CartFragment: Fragment(R.layout.fragment_cart){
         }
         cartVM.totalPrice.observe(viewLifecycleOwner) { total ->
             if (total != null) {
-                binding.tvFinalPay.text = convertedPrice(total) + "Đ"
+                binding.tvFinalPay.text = convertedPrice(total)
             }
         }
     }

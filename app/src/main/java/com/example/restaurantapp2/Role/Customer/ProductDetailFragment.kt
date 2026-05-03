@@ -81,6 +81,20 @@ class ProductDetailFragment: Fragment(R.layout.fragment_product_detail) {
             binding.productDiscountTextView.visibility = View.GONE
 
         }
+        binding.btnPlus.setOnClickListener {
+            val current = binding.etQuantity.text.toString().toIntOrNull() ?: 1
+            binding.etQuantity.setText((current + 1).toString())
+            binding.btnMinus.isEnabled = true
+        }
+        binding.btnMinus.setOnClickListener {
+            val current = binding.etQuantity.text.toString().toIntOrNull() ?: 1
+            if (current > 1) {
+                binding.etQuantity.setText((current - 1).toString())
+            }else{
+                binding.btnMinus.isEnabled = false
+            }
+
+        }
 
     }
 

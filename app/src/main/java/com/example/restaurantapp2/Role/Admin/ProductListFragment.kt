@@ -33,7 +33,7 @@ class ProductListFragment: Fragment(R.layout.fragment_product_list) {
                     putInt("productId", product.productId)
                 }
                 // handle edit click, e.g. navigate to edit screen with product details
-                Toast.makeText(requireContext(), "Edit clicked for ${product.productName}", Toast.LENGTH_SHORT).show()
+//                Toast.makeText(requireContext(), "Edit clicked for ${product.productName}", Toast.LENGTH_SHORT).show()
                 Log.d("Product Id:", "${product.productId}")
                 parentFragmentManager.beginTransaction().apply {
                     replace(R.id.flFragment, CreateProductFragment::class.java, bundle)
@@ -56,7 +56,8 @@ class ProductListFragment: Fragment(R.layout.fragment_product_list) {
                 // handle category click, e.g. filter products by category
                 if(category.categoryId==-1){
                     CreateCategoryDialogFragment{
-                        name -> Toast.makeText(requireContext(), "New category name: $name", Toast.LENGTH_SHORT).show()
+                        name ->
+//                        Toast.makeText(requireContext(), "New category name: $name", Toast.LENGTH_SHORT).show()
 
                         val cate = CategoryRequest(categoryId = 0, categoryName = name, status = "ACTIVE")   // id will be assigned by backend
 
@@ -66,11 +67,11 @@ class ProductListFragment: Fragment(R.layout.fragment_product_list) {
                 }
                 else {
                     viewModel.filterProductsByCategory(category.categoryId)
-                    Toast.makeText(
-                        requireContext(),
-                        "Category clicked: ${category.categoryName}",
-                        Toast.LENGTH_SHORT
-                    ).show()
+//                    Toast.makeText(
+//                        requireContext(),
+//                        "Category clicked: ${category.categoryName}",
+//                        Toast.LENGTH_SHORT
+//                    ).show()
                     Log.d(
                         "ProductListFragment",
                         "Category clicked: ${category.categoryName}" + "All product: " + viewModel.allProducts.size + "Filtered product: " + viewModel.products.value?.size

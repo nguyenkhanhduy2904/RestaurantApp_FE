@@ -64,7 +64,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
 
                     if (idToken == null) {
                         Log.d("idToken", "id token was null")
-                        Toast.makeText(requireContext(), "Id token null", Toast.LENGTH_SHORT).show()
+//                        Toast.makeText(requireContext(), "Id token null", Toast.LENGTH_SHORT).show()
                         return@registerForActivityResult
                     }
 
@@ -101,12 +101,33 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
 
         btnLoginLocal.setOnClickListener {
             btnLoginLocal.isEnabled = false
+            Log.d("Butto test", "Button login clicked")
 
             val etUsername = view.findViewById<TextInputEditText>(R.id.etUsername)
             val etPassword = view.findViewById<TextInputEditText>(R.id.etPassword)
 
             val username = etUsername.text.toString()
             val password = etPassword.text.toString()
+            val missingFields = mutableListOf<String>()
+            if(username.isBlank()){
+                etUsername.error = "Required"
+                missingFields.add("Username")
+
+            }
+            if(password.isBlank()){
+                etPassword.error = "Required"
+                missingFields.add("Password")
+
+            }
+            if (missingFields.isNotEmpty()) {
+                btnLoginLocal.isEnabled = true
+                Toast.makeText(
+                    requireContext(),
+                    "Please enter: ${missingFields.joinToString(", ")}",
+                    Toast.LENGTH_SHORT
+                ).show()
+                return@setOnClickListener
+            }
 
             viewLifecycleOwner.lifecycleScope.launch {
                 try {
@@ -140,10 +161,10 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         tvSignupLocal.setOnClickListener {
             parentFragmentManager.beginTransaction()
                 .replace(R.id.flAuthContainer, CreateSigninFragment())
-                .addToBackStack(null) // 👈 important for back button
+                .addToBackStack(null)
                 .commit()
 
-            Toast.makeText(requireContext(), "Clicked create account", Toast.LENGTH_LONG).show()
+//            Toast.makeText(requireContext(), "Clicked create account", Toast.LENGTH_LONG).show()
         }
         val btnLoginAsGoogle = view.findViewById<View>(R.id.btnLoginAsGoogle)
 
@@ -203,14 +224,14 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                 val idToken = account.idToken
 
 
-                Toast.makeText(requireContext(), "Logged in as $name ($email)", Toast.LENGTH_LONG).show()
+//                Toast.makeText(requireContext(), "Logged in as $name ($email)", Toast.LENGTH_LONG).show()
                 Log.d("GoogleLogin", "ID Token: $idToken")
 
                 val authRepo = AuthRepository()
                 viewLifecycleOwner.lifecycleScope.launch {
                     try{
                         if(idToken == null){
-                            Toast.makeText(requireContext(), "Id token was null", Toast.LENGTH_LONG).show()
+//                            Toast.makeText(requireContext(), "Id token was null", Toast.LENGTH_LONG).show()
                             return@launch
                         }
                         val response = authRepo.googleAuth(
@@ -222,7 +243,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                         }
                         else{
                             val data = response.data
-                            Toast.makeText(requireContext(), "Google login success", Toast.LENGTH_LONG).show()
+//                            Toast.makeText(requireContext(), "Google login success", Toast.LENGTH_LONG).show()
                             Log.d("google login", "Google login sucess")
                             Log.d("google login", "data: $data")
                         }

@@ -144,7 +144,7 @@ class CustomerActivity : AppCompatActivity() {
         setCurrentFragment(frgList);
 
         bottomNavigationView.setOnItemSelectedListener {
-            Toast.makeText(this, "Selected: ${it.title}", Toast.LENGTH_SHORT).show()
+//            Toast.makeText(this, "Selected: ${it.title}", Toast.LENGTH_SHORT).show()
             when (it.itemId){
                 R.id.milist -> setCurrentFragment(frgList)
                 R.id.micart -> setCurrentFragment(frgCart)

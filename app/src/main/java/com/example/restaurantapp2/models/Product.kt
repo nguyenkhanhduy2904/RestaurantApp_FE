@@ -7,7 +7,7 @@ data class Product(
     val productDescription : String,
     val categoryId : Int,
     val productThumbnailUrl : String,
-    val priceReduction : Float,
+    val priceReduction: Int,
     val status : String
 ) {
     val isDiscounted : Boolean

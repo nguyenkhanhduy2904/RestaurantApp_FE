@@ -73,7 +73,6 @@ class CreateProductFragment : Fragment(R.layout.add_product_layout2) {
 
                 // show selected image
                 btnPickImage.setImageURI(it)
-
                 //remove padding/icon effect
                 btnPickImage.scaleType = ImageView.ScaleType.CENTER_CROP
             }
@@ -145,7 +144,7 @@ class CreateProductFragment : Fragment(R.layout.add_product_layout2) {
         }
         txtReduction = view.findViewById<TextView>(R.id.txtProductPriceReduction)
         slider.addOnChangeListener { _, value, _ ->
-            txtReduction.text = "${value.toFloat()}%"
+            txtReduction.text = "${value.toInt()}%"
         }
 
         vm.createStatus.observe(viewLifecycleOwner) { success ->

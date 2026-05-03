@@ -27,6 +27,7 @@ class ProductAdapterAdmin (
 
             binding.txtFoodCategory.text = categoryMap[product.categoryId] ?: "Unknown Category"
 
+            binding.txtFoodPriceDiscount.visibility = View.GONE
 
             binding.txtFoodPrice.text = convertedPrice(product.finalPrice)
             binding.btnEdit.setOnClickListener {
@@ -35,10 +36,17 @@ class ProductAdapterAdmin (
             if(product.isDiscounted){
                 binding.txtPriceReduction.visibility = View.VISIBLE
                 binding.txtPriceReduction.text = product.priceReduction.toString() + "%"
+
+                binding.txtFoodPriceDiscount.visibility = View.VISIBLE
+                binding.txtFoodPriceDiscount.text = convertedPrice(product.finalPrice)
+
+                binding.txtFoodPrice.paintFlags = binding.txtFoodPrice.paintFlags or android.graphics.Paint.STRIKE_THRU_TEXT_FLAG
             }
             else{
                 binding.txtPriceReduction.visibility = View.GONE
                 binding.txtPriceReduction.text = ""
+                binding.txtFoodPrice.paintFlags =
+                    binding.txtFoodPrice.paintFlags and android.graphics.Paint.STRIKE_THRU_TEXT_FLAG.inv()
             }
             Glide.with(binding.root).load(product.productThumbnailUrl).placeholder(R.drawable.default_food_img).into(binding.ivFoodImage)
         }

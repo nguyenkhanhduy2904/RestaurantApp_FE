@@ -19,13 +19,24 @@ class OrderDetailAdapter() : RecyclerView.Adapter<OrderDetailAdapter.OrderDetail
         fun bind(item : OrderDetailResponse){
             binding.tvQuantity.text = "${item.quantity}x"
             binding.tvProductName.text = item.productName
-            binding.tvUnitPrice.text = convertedPrice(item.unitPrice)
+            binding.tvUnitPrice.text = convertedPrice((item.unitPrice * item.quantity))
+            binding.tvFinalPrice.visibility = View.GONE
             if(item.discountPercent >0){
                 binding.tvDiscountPercent.text = "-${item.discountPercent}%"
                 binding.tvDiscountPercent.visibility = View.VISIBLE
+                binding.tvFinalPrice.visibility =View.VISIBLE
+                val discountedPrice = item.unitPrice * (1 - item.discountPercent / 100.0)
+                binding.tvFinalPrice.text = convertedPrice(discountedPrice * item.quantity)
+                binding.tvUnitPrice.paintFlags =
+                    binding.tvUnitPrice.paintFlags or android.graphics.Paint.STRIKE_THRU_TEXT_FLAG
             }
             else{
                 binding.tvDiscountPercent.visibility = View.GONE
+                binding.tvFinalPrice.visibility = View.GONE
+
+
+                binding.tvUnitPrice.paintFlags =
+                    binding.tvUnitPrice.paintFlags and android.graphics.Paint.STRIKE_THRU_TEXT_FLAG.inv()
             }
             if(item.note.isNullOrBlank()){
                 binding.tvNote.visibility = View.GONE

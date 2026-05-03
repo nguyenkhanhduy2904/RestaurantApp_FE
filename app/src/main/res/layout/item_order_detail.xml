@@ -32,6 +32,16 @@
         android:layout_height="wrap_content"
         android:text="100.000d"
         app:layout_constraintStart_toEndOf="@id/tvProductName"
+        app:layout_constraintEnd_toStartOf="@id/tvFinalPrice"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintHorizontal_weight="1.5"
+        android:gravity="end"/>
+    <TextView
+        android:id="@+id/tvFinalPrice"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="100.000d"
+        app:layout_constraintStart_toEndOf="@id/tvUnitPrice"
         app:layout_constraintEnd_toStartOf="@id/tvDiscountPercent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintHorizontal_weight="1.5"
@@ -43,7 +53,7 @@
         android:layout_height="wrap_content"
         android:text="-30%"
         android:gravity="end"
-        app:layout_constraintStart_toEndOf="@id/tvUnitPrice"
+        app:layout_constraintStart_toEndOf="@id/tvFinalPrice"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintHorizontal_weight="1"/>

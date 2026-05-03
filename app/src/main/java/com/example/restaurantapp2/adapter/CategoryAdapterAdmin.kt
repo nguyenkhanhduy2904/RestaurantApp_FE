@@ -30,7 +30,7 @@ class CategoryAdapterAdmin(
 
             if (isAddItem) {
                 //TODO: open another screen to create new category
-                Toast.makeText(binding.root.context, "Add new category clicked", Toast.LENGTH_SHORT).show()
+//                Toast.makeText(binding.root.context, "Add new category clicked", Toast.LENGTH_SHORT).show()
                 return
             }
 
